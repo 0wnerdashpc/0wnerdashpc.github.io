@@ -42,35 +42,60 @@ const shuffleArray = function(array) {
     return a;
 };
 
-var ranPhoto = photoList[Math.floor(Math.random()*photoList.length)];
+function urlChecker(url) {
+    var img = new Image();
+    img.src = url;
+    return img.height != 0;
+}
+
+const inputParser = function(){
+    var ranPhoto = photoList[Math.floor(Math.random()*photoList.length)];
+    var pLink = $('#myInput').val();
+    var spLink = pLink.split(" ");
+    if (spLink == ""){
+        alert('Insert a link to a photo, or a first name last name.');
+    } else if (spLink.length == 1){
+        console.log(spLink);
+        if (urlChecker(spLink) == true){
+            $(ranPhoto).attr('src', spLink);
+        } else {
+            alert('No photo found at link provided - Error #001');
+        }
+    } else if (spLink.length == 2) {
+        var combinedLink = "https://mdc.gta.world/img/persons/" + spLink[0] + "_" + spLink[1] + ".png"
+        if (urlChecker(combinedLink) == true){
+            $(ranPhoto).attr('src', combinedLink);
+        } else {
+            alert('No photo found on file for suspect - Error #002');
+        }
+    } else if (spLink.length > 2) {
+        alert('Double check your input. No name or link detected - Error #003');
+    } else {
+        alert('You somehow figured out how to break shit - Error #ID10T');
+    }
+}
+
+const insertThingy = function(selectedPhotos) {
+    for (i = 0, len = selectedPhotos.length; i < len; i++){
+        var newLink = "https://mdc.gta.world/img/persons/" + selectedPhotos[i] + ".png"
+        $(photoList[i]).attr('src', newLink);
+    }
+}
+
 $(document).ready(function() {
     $('#submitPhoto').click(function() {
         if(document.getElementById('bmaRadio').checked) {
             let selectedPhotos = shuffleArray(bmaPhoto);
-            console.log(selectedPhotos);
-            for (i = 0, len = selectedPhotos.length; i < len; i++){
-                var newLink = "https://mdc.gta.world/img/persons/" + selectedPhotos[i] + ".png"
-                $(photoList[i]).attr('src', newLink);
-                console.log(newLink);
-            }
+            insertThingy(selectedPhotos);
+            inputParser();
         } else if (document.getElementById('hmaRadio').checked){
             let selectedPhotos = shuffleArray(hmaPhoto);
-            console.log(selectedPhotos);
-            for (i = 0, len = selectedPhotos.length; i < len; i++){
-                var newLink = "https://mdc.gta.world/img/persons/" + selectedPhotos[i] + ".png"
-                $(photoList[i]).attr('src', newLink);
-                console.log(newLink);
-            }
+            insertThingy(selectedPhotos);
+            inputParser();
         } else if (document.getElementById('wmaRadio').checked){
             let selectedPhotos = shuffleArray(wmaPhoto);
-            console.log(selectedPhotos);
-            for (i = 0, len = selectedPhotos.length; i < len; i++){
-                var newLink = "https://mdc.gta.world/img/persons/" + selectedPhotos[i] + ".png"
-                $(photoList[i]).attr('src', newLink);
-                console.log(newLink);
-            }
+            insertThingy(selectedPhotos);
+            inputParser();
         }
-        var photoLink = $('#myInput').val();
-        $(ranPhoto).attr('src', photoLink);
     });
 });
